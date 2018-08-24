@@ -12,8 +12,22 @@ clean:
 	conda env remove --name $(ENV) --yes
 	conda clean --source-cache --yes
 
-# Testing
 test: setup run clean
+
+# Platform Commands
+# Windows
+setup-win:
+	rm -f chromedriver
+	cp drivers/windows/chromedriver .
+
+test-win: setup-win test
+
+# Linux
+setup-linux:
+	rm -f chromedriver
+	cp drivers/linux/chromedriver .
+
+test-linux: setup-linux test
 
 # Installs Anaconda on Linux (good for Ubuntu Subsystem)
 setup-conda:

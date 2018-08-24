@@ -6,9 +6,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class PostyConfig:
-	exe = os.path.join(os.getcwd(), "chromedriver.exe")
+	exe = None
 	useragent = "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"
 	timeout = 10
+
+	def __init__(self):
+		filename = "chromedriver"
+		self.exe = os.path.join(os.getcwd(), filename)
 
 class PostyUser:
 	address = "1900 E York St, Philadelphia, PA"

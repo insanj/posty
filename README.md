@@ -1,5 +1,10 @@
 # posty
 
+[![Build Status](https://travis-ci.com/insanj/posty.svg?token=esypzNUpVoxWgx65pRhC&branch=master)](https://travis-ci.com/insanj/posty)
+[![](https://img.shields.io/badge/language-python3.5-4dbdd1.svg)](https://github.com/insanj/posty/search?l=python)
+![](https://img.shields.io/badge/package--manager-conda-edcb47.svg)
+[![](https://img.shields.io/aur/license/yaourt.svg?style=popout)](LICENSE)
+
 🍴
 
 A fun tool to scrape and sort [Postmates](https://postmates.com).
