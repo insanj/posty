@@ -1,0 +1,6 @@
+name: posty
+dependencies:
+- python>=3.5
+- pip
+- pip:
+  - selenium
