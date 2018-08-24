@@ -1,6 +1,10 @@
 import re
 import os
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 # Setup
 opts = webdriver.ChromeOptions()
@@ -14,8 +18,18 @@ driver = webdriver.Chrome(executable_path=chromedriver, chrome_options=opts)
 driver.get("https://postmates.com/feed")
 
 # Step Two
-field = driver.getElementForSelector("input")
+field = driver.find_element_by_css_selector("input")
 field.send_keys("1942 E York St, Philadelphia, PA")
-field.submit()
+button = driver.find_element_by_css_selector("#e2e-go-button")
+button.click()
 
-# restaurants = driver.find_elements_by_css_selector("div[role=presentation]")
+try:
+	element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[role=presentation]")))
+finally:
+	restaurants = driver.find_elements_by_css_selector("div[role=presentation]")
+	for r in restaurants:
+		print("\n------- RESTAURANT --------")
+		print(r.find_element_by_css_selector("img").get_attribute("alt"))
+		print(r.get_attribute('innerHTML'))
+	driver.quit()
+
