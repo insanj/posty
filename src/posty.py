@@ -5,21 +5,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def PostyConfig(Object):
+class PostyConfig:
 	exe = os.path.join(os.getcwd(), "chromedriver.exe")
 	useragent = "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"
 	timeout = 10
 
-def PostyUser(Object):
-	address = "1942 E York St, Philadelphia, PA"
+class PostyUser:
+	address = "1900 E York St, Philadelphia, PA"
 
-def PostySpec(Object):
+class PostySpec:
 	home = "https://postmates.com"
 	field = "input"
 	button = "#e2e-go-button"
 	restaurant = "div[role=presentation]"
 
-def PostyDriver(Object):
+class PostyDriver:
 	config = None
 	user = None
 	spec = None
@@ -54,34 +54,44 @@ def PostyDriver(Object):
 		finally:
 			return r
 
+	def findAllRestaurantElements(self):
+		return self.driver.find_elements_by_css_selector(self.spec.restaurant)
+
+	def convertRestaurantElementToString(self, ele):
+		name = ele.find_element_by_css_selector("img").get_attribute("alt")
+		contents = ele.get_attribute('innerHTML')
+		regex = "</?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[\\^'\">\\s]+))?)+\\s*|\\s*)/?>"
+		trimmed = re.sub(regex, "", contents)
+		cleaned = trimmed.replace("$", " $")
+		return cleaned
+
 	def quit(self):
 		self.driver.quit()
 
-def Posty(Object):
+class Posty:
 	driver = None
 	def __init__(self, driver=PostyDriver()):
 		self.driver = driver
 
-	def navigateToHomeAndGetToFeed(self):
+	def navigateToHomeAndGetFeedRestaurantStrings(self):
 		self.driver.navigateToHome()
 		self.driver.fillAddressInHome()
 		self.driver.clickAddressInHome()
 
 		result = self.driver.waitUntilFeedLoads()
-		restaurants = self.driver.find_elements_by_css_selector("div[role=presentation]")
+		restaurants	= self.driver.findAllRestaurantElements()
+		strings = []
 		for r in restaurants:
-			print("\n------- RESTAURANT --------")
-			print(r.find_element_by_css_selector("img").get_attribute("alt"))
-			# print(r.get_attribute('innerHTML'))
-			contents = r.get_attribute('innerHTML')
-			regex = "</?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[\\^'\">\\s]+))?)+\\s*|\\s*)/?>"
-			trimmed = re.sub(regex, "", contents)
-			print(trimmed)
+			strings.append(self.driver.convertRestaurantElementToString(r))
+		return strings
 
 	def quit(self):
 		self.driver.quit()
 
 if __name__ == "__main__":
-	p = Posty()
-	p.navigateToHomeAndGetToFeed()
-	p.quit()
+	print("\n\nRunning Posty v1!! Here are all the restaurants I found nearby...\n")
+	posty = Posty()
+	places = posty.navigateToHomeAndGetFeedRestaurantStrings()
+	for p in places: print("- " + p)
+	posty.quit()
+	print("See ya next time!\n\n")

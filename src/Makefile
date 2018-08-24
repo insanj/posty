@@ -2,11 +2,11 @@ SHELL=/bin/bash
 ENV=posty
 RUN=posty.py
 
-setup:
-	conda env create --file environment.yml
-
 run:
 	source activate $(ENV) && python $(RUN) && source deactivate
+
+setup:
+	conda env create --file environment.yml
 
 clean:
 	conda env remove --name $(ENV) --yes
