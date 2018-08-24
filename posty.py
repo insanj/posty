@@ -30,6 +30,10 @@ finally:
 	for r in restaurants:
 		print("\n------- RESTAURANT --------")
 		print(r.find_element_by_css_selector("img").get_attribute("alt"))
-		print(r.get_attribute('innerHTML'))
+		# print(r.get_attribute('innerHTML'))
+		contents = r.get_attribute('innerHTML')
+		regex = "</?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[\\^'\">\\s]+))?)+\\s*|\\s*)/?>"
+		trimmed = re.sub(regex, "", contents)
+		print(trimmed)
 	driver.quit()
 
