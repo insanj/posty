@@ -19,9 +19,11 @@ class PostyUser:
 
 class PostySpec:
 	home = "https://postmates.com"
+	feed = "https://postmates.com/place-groups/postmates-plus-philadelphia"
 	field = "input"
 	button = "#e2e-go-button"
-	restaurant = "div[role=presentation]"
+	homeRestaurant = "div[role=presentation]"
+	restaurant = '[id^="e2e-feed-place-item"]'
 
 class PostyDriver:
 	config = None
@@ -40,8 +42,14 @@ class PostyDriver:
 		opts.add_argument(self.config.useragent)
 		self.driver = webdriver.Chrome(executable_path=self.config.exe, chrome_options=opts)
 
+	def navigateTo(self, url):
+		self.driver.get(url)
+
 	def navigateToHome(self):
-		self.driver.get(self.spec.home)
+		self.navigateTo(self.spec.home)
+
+	def navigateToFeed(self):
+		self.navigateTo(self.spec.feed)
 
 	def fillAddressInHome(self):
 		field = self.driver.find_element_by_css_selector(self.spec.field)
@@ -51,10 +59,10 @@ class PostyDriver:
 		button = self.driver.find_element_by_css_selector(self.spec.button)
 		button.click()
 
-	def waitUntilFeedLoads(self):
+	def waitUntilHomeLoads(self):
 		r = None
 		try:
-			r = WebDriverWait(self.driver, self.config.timeout).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.spec.restaurant)))
+			r = WebDriverWait(self.driver, self.config.timeout).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.spec.homeRestaurant)))
 		finally:
 			return r
 
@@ -62,7 +70,7 @@ class PostyDriver:
 		return self.driver.find_elements_by_css_selector(self.spec.restaurant)
 
 	def convertRestaurantElementToString(self, ele):
-		name = ele.find_element_by_css_selector("img").get_attribute("alt")
+		# name = ele.find_element_by_css_selector("img").get_attribute("alt")
 		contents = ele.get_attribute('innerHTML')
 		regex = "</?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[\\^'\">\\s]+))?)+\\s*|\\s*)/?>"
 		trimmed = re.sub(regex, "", contents)
@@ -81,8 +89,9 @@ class Posty:
 		self.driver.navigateToHome()
 		self.driver.fillAddressInHome()
 		self.driver.clickAddressInHome()
+		self.driver.waitUntilHomeLoads()
+		self.driver.navigateToFeed()
 
-		result = self.driver.waitUntilFeedLoads()
 		restaurants	= self.driver.findAllRestaurantElements()
 		strings = []
 		for r in restaurants:
