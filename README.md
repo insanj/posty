@@ -11,11 +11,24 @@
 
 `make run`
 
+Posty will launch a bot-controlled Chrome instance and scrape various Postmates pages using the config provided by the Python class [PostyUser](https://github.com/insanj/posty/blob/master/src/posty.py#L17). The following attributes are customizable:
+
+- Address
+- Feed (Home page, Category page, etc)
+
+Using these fields, ideally Posty can:
+
+- Sort restaurants (price, distance, name)
+- Scrape various feeds and/or addresses and aggregate content
+- Easily display rich data and deeplink into restaurant sites
+
 ## Installation
 
-Use the [Makefile](src/Makefile) to setup the conda environment, and ensure selenium is installed. A Linux example of this is provided in the recipe `setup-conda`.
+Posty uses [Conda](https://conda.io/) to manage the Python environment. Use the provided [Makefile](src/Makefile) to automatically configure the setup for production. Examples of setting up a Linux workspace from scratch are also in the Make recipes.
 
-## Example
+To manually setup dependencies, install Python 3+ and use Pip to ensure Selenium is installed ([Linux & Windows webdrivers included](https://github.com/insanj/posty/tree/master/src/drivers)).
+
+## Examples
 
 ```
 Running Posty v1!! Here are all the restaurants I found nearby...
@@ -71,4 +84,11 @@ See ya next time!
 
 ## License
 
-[See LICENSE](LICENSE),
+insanj/posty is licensed under the GNU General Public License v3.0
+
+[See LICENSE](LICENSE).
+
+
+## Author
+
+[Julian @insanj Weiss](https://github.com/insanj), 2018
